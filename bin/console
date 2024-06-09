@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "json_jws"
+
+# You can add fixtures and/or initialization code here to make experimenting
+# with your gem easier. You can also use a different console, if you like.
+
+# (If you use this, don't forget to add pry to your Gemfile!)
+# require "pry"
+# Pry.start
+
+require "irb"
+require "byebug"
+
+require "jose"
+require "openssl"
+
+# If you want to load key from private key string
+# rsa_key_01 = OpenSSL::PKey::RSA.new(rsa_priv_01_str)
+# rsa_key_02 = OpenSSL::PKey::RSA.new(rsa_priv_01_str)
+
+rsa_key_01 = OpenSSL::PKey::RSA.generate(2048)
+puts "RSA key 01 Private: ", rsa_key_01.to_s, "\n"
+puts "RSA key 01 Public: ", rsa_key_01.public_key.to_s
+puts "\n" * 3
+
+rsa_key_02 = OpenSSL::PKey::RSA.generate(2048)
+puts "RSA key 02 Private: ", rsa_key_02.to_s, "\n"
+puts "RSA key 02 Public: ", rsa_key_02.public_key.to_s
+puts "\n" * 3
+
+header = { "alg" => "RS256" }
+payload = "It’s a dangerous business, Frodo, going out your door.".encode("utf-8")
+payload = "{1}".encode("utf-8")
+jwk = JOSE::JWK.from_key(rsa_key_01)
+jwk2 = JOSE::JWK.from_key(rsa_key_02)
+
+puts "\n\nEncoding:\n"
+json_jws = JSON_JWS.encode(jwk, header, payload)
+puts "json_jws: \n", json_jws
+
+puts "\n\nVerify json jws"
+verify_result = JSON_JWS.verify(json_jws, [jwk])
+print "verify_result: ", verify_result
+
+puts "\n\nAdd another signature"
+# json_jws_2 = JSON_JWS.add_signature(json_jws, jwk2, { "alg" => "RS256", "extra" => "field" }, payload)
+json_jws_2 = JSON_JWS.add_signature(json_jws, jwk2, header, payload)
+puts "json_jws_2: \n", json_jws_2
+
+puts "\n\nVerify json jws 2"
+verify_result = JSON_JWS.verify(json_jws_2, [jwk, jwk2])
+print "verify_result: ", verify_result
+
+puts "\n\nJWS multiple signatures decoding"
+decoded = JSON_JWS.decode(json_jws_2)
+print "decoded: ", decoded
+
+IRB.start(__FILE__)
