@@ -1,6 +1,6 @@
 # JsonJws
 
-JsonJws is a gem that provides support for JWS (JSON Web Signature) with JSON serialization, specifically designed to handle multiple signatures.
+JsonJws is a Ruby gem that provides support for JWS (JSON Web Signature) with JSON serialization, specifically designed to handle multiple signatures.
 
 ## Installation
 
@@ -23,6 +23,7 @@ Or install it yourself as:
 ```ruby
 require "jose"
 require "openssl"
+require 'json_jws'
 
 # If you want to load key from private key string
 # rsa_key_01 = OpenSSL::PKey::RSA.new(rsa_priv_01_str)
