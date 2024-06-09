@@ -14,18 +14,15 @@ module JsonJws::Verify
   end
 
   def verify(jws, jwks)
-
     # verify payload is base64 encoded
-    begin
-      Base64.urlsafe_decode64(jws["payload"])
-    rescue
-      return false
-    end
+    Base64.urlsafe_decode64(jws["payload"])
 
     jws["signatures"].each_with_index do |signature, index|
       return false unless verify_signature(jwks[index], jws["payload"], signature)
     end
 
     true
+  rescue
+    return false
   end
 end

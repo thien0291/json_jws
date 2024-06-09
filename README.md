@@ -54,8 +54,8 @@ verify_result = JSON_JWS.verify(json_jws, [jwk])
 print "verify_result: ", verify_result
 
 puts "\n\nAdd another signature"
-# json_jws_2 = JSON_JWS.add_signature(json_jws, jwk2, { "alg" => "RS256", "extra" => "field" }, payload)
-json_jws_2 = JSON_JWS.add_signature(json_jws, jwk2, header, payload)
+json_jws_2 = JSON_JWS.add_signature(json_jws, jwk2, { "alg" => "RS256", "extra" => "field" })
+# json_jws_2 = JSON_JWS.add_signature(json_jws, jwk2, header)
 puts "json_jws_2: \n", json_jws_2
 
 puts "\n\nVerify json jws 2"
